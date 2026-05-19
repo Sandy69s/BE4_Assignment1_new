@@ -80,28 +80,6 @@ app.get("/books/:bookId", async(req, res) => {
 })
 
 
-//Add new book
-
-async function AddNewBook( book ){
-  try{
-    const NEWbook = new Book( book );
-    const saveBook = NEWbook.save();
-    return saveBook;
-  }
-  catch(error){
-    console.log(error);
-  }
-}
-
-app.post("/books", async (req, res) => {
-  try{
-    const newBook = await AddNewBook( req.body );
-    res.status(201).json({message: "Book added successfully", book: newBook});
-  }
-  catch(error){
-    res.status(500).json({error: "Error adding book to database"});
-  }
-})
 
 //get All books
 
