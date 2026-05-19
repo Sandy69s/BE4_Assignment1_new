@@ -10,6 +10,76 @@ app.use(express.json());
 
 initializeDatabase();
 
+
+  
+// const bookData = {
+//   title:"I too had a love story",
+//   author:"Ravindar Singh",
+//   publishedYear:2000,
+//   genre:"Romance",
+//   language:"English",
+//   country:"India",
+//   rating:"4.7",
+//   summary:"A real life emotional and romantic heart touching story of ravindar singh",
+// }
+
+
+//Add a book to database
+
+async function createBook( bookData ){
+  try{
+    const book = new Book( bookData );
+    const savedBook = await book.save();
+    return savedBook;
+  }
+  catch(error){
+    throw error
+  }
+}
+
+app.post("/books", async(req, res) => {
+  try{
+    const book = await createBook( req.body );
+
+    if(book){
+      res.status(200).json({message:"Book added successfully", book:book});
+    }else{
+      res.status(404).json({error: "book not found"});
+    }
+  }
+  catch(error){
+    res.status(500).json({error: "Error adding data to database"});
+  }
+})
+
+//Delete a book
+
+async function DeleteBookById( bookId ){
+  try{
+    const deletedBook = await Book.findByIdAndDelete( bookId );
+    console.log("Deleted Book", deletedBook);
+  }
+  catch(error){
+    throw error
+  }
+}
+
+app.get("/books/:bookId", async(req, res) => {
+  try{
+    const deletedBook = await DeleteBookById( req.params.bookId );
+
+    if(deletedBook){
+      res.status(202).json({message: "Book deleted successfully", book: deletedBook});
+    }else{
+      res.status(404).json({error: "Book not found"});
+    }
+  }
+  catch(error){
+    res.status(500).json({error: "Error deleting book"});
+  }
+})
+
+
 //Add new book
 
 async function AddNewBook( book ){
